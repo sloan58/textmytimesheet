@@ -8,8 +8,6 @@ class SetupSeeder extends Seeder
 {
     public function run()
     {
-        \Illuminate\Support\Facades\Artisan::call("migrate:refresh");
-
         // Reset cached roles and permissions
         app()['cache']->forget('spatie.permission.cache');
 
@@ -29,13 +27,6 @@ class SetupSeeder extends Seeder
         $role = Role::create(['name' => 'developer']);
         $role->givePermissionTo(Permission::all());
 
-        \App\User::create([
-            'name' => 'Marty Sloan',
-            'email' => 'martinsloan58@gmail.com',
-            'phone_number' => env('ADMIN_TELEPHONE'),
-            'password' => bcrypt('p@$$word!')
-        ])->assignRole('developer');
-
         $role = Role::create(['name' => 'admin']);
         $role->givePermissionTo([
             'create users',
@@ -43,6 +34,15 @@ class SetupSeeder extends Seeder
             'update users',
             'delete users'
         ]);
+
+        \App\User::create([
+            'name' => 'Marty Sloan',
+            'email' => 'martinsloan58@gmail.com',
+            'phone_number' => env('ADMIN_TELEPHONE'),
+            'password' => bcrypt('p@$$word!')
+        ])->assignRole('developer', 'admin');
+
+        $role = Role::create(['name' => 'user']);
 
     }
 }

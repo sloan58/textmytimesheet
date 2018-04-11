@@ -11,12 +11,8 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/tmts', 'TextController@entry');
 
-
-// inside the 'admin' prefix, I presume
-Route::group(['prefix' => 'admin', 'middleware' => ['admin']], function () {
+Route::group(['middleware' => ['admin']], function () {
     CRUD::resource('user', 'Admin\UserCrudController');
 });

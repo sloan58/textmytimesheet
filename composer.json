@@ -14,7 +14,8 @@
         "backpack/permissionmanager": "^2.1",
         "fideloper/proxy": "^4.0",
         "laravel/framework": "5.6.*",
-        "laravel/tinker": "^1.0"
+        "laravel/tinker": "^1.0",
+        "twilio/sdk": "^5.16"
     },
     "require-dev": {
         "backpack/generators": "^1.1",
