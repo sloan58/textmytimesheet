@@ -10,6 +10,7 @@
         "backpack/base": "^0.9.2",
         "backpack/crud": "^3.4",
         "backpack/logmanager": "^2.3",
+        "backpack/permissionmanager": "^2.1",
         "fideloper/proxy": "^4.0",
         "laravel/framework": "5.6.*",
         "laravel/tinker": "^1.0"
