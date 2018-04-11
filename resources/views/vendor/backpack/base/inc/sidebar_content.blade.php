@@ -2,7 +2,7 @@
 <li><a href="{{ backpack_url('dashboard') }}"><i class="fa fa-dashboard"></i> <span>{{ trans('backpack::base.dashboard') }}</span></a></li>
 
 <!-- Developer Users, Roles Permissions -->
-@can('edit permissions')
+@can('update permissions')
 <li class="treeview">
     <a href="#"><i class="fa fa-group"></i> <span>Users & Roles</span> <i class="fa fa-angle-left pull-right"></i></a>
     <ul class="treeview-menu">

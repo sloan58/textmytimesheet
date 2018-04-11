@@ -14,3 +14,9 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+// inside the 'admin' prefix, I presume
+Route::group(['prefix' => 'admin', 'middleware' => ['admin']], function () {
+    CRUD::resource('user', 'Admin\UserCrudController');
+});
