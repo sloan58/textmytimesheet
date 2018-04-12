@@ -15,6 +15,7 @@
         "fideloper/proxy": "^4.0",
         "laravel/framework": "5.6.*",
         "laravel/tinker": "^1.0",
+        "nesbot/carbon": "^1.25",
         "twilio/sdk": "^5.16"
     },
     "require-dev": {

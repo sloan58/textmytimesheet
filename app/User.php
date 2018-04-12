@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Jobs\WelcomeNewUser;
+use App\Models\TimeEntry;
 use Backpack\CRUD\CrudTrait;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
@@ -28,4 +30,28 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+
+    public static function boot() {
+
+        /**
+         *  User created event
+         */
+        static::created(function(User $user) {
+            \Log::info('User@boot: calling User Created hook', []);
+            WelcomeNewUser::dispatch($user);
+        });
+
+        parent::boot();
+    }
+
+    /**
+     *  A User has many Time Entries
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function timeEntries()
+    {
+        return $this->hasMany(TimeEntry::class);
+    }
 }

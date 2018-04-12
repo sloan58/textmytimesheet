@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TimeEntry;
 use App\User;
 use Twilio\Twiml;
 use Illuminate\Http\Request;
@@ -301,24 +302,131 @@ class TextController extends Controller
         \Log::info('TextController@userInterface: Checking SMS body', []);
         switch (true) {
             case stristr($this->message, 'add'):
-                return $this->userAddTime();
-                break;
-            case stristr($this->message, 'remove'):
-                return $this->userRemoveTime();
+                return $this->userAddTimeEntry();
                 break;
             case stristr($this->message, 'list'):
-                return $this->userListTime();
+                return $this->userListTimeEntries();
+                break;
+            case stristr($this->message, 'commands'):
+                return $this->userListCommands();
                 break;
             default:
                 $message = $this->twiml->message();
                 $defaultMessage = "Hello, and welcome to TextMyTimeSheet!\n\n" .
-                    "Start your request with one of the following keywords:\n\n" .
-                    "'add', 'remove' 'list' or 'report'\n\n" .
-                    "For help with any command, just text <command> help.\n\n" .
-                    "For example: 'add help'";
+                    "Start by using a command to manage your timesheet.\n\n" .
+                    "For a list of commands, text 'commands'\n\n";
+
+
                 $message->body($defaultMessage);
                 break;
         }
+        return response($this->twiml)->header('Content-Type', 'application/xml');
+    }
+
+    /**
+     * Where Users can add Time Entries
+     *
+     * @return mixed
+     */
+    private function userAddTimeEntry()
+    {
+        \Log::info('TextController@userAddTimeEntry: SMS body contains the "add" keyword', []);
+
+        if (stristr($this->message, 'help')) {
+            \Log::info('TextController@userAddTimeEntry: SMS body also contains the "help" keyword.  This is a request for help.', []);
+            $adminHelp = "You can add an entry to your timesheet by texting:\n\n" .
+                "add <time> for <project>\n\n" .
+                "For example:\n\n" .
+                "add 8 for Miller's deck";
+            $message = $this->twiml->message();
+            $message->body($adminHelp);
+            return response($this->twiml)->header('Content-Type', 'application/xml');
+        }
+
+        \Log::info('TextController@userAddTimeEntry: Parsing body text to add new time entry', []);
+        preg_match("/^add(.*)for(.*)$/i", $this->message, $matches);
+        $hours = trim($matches[1]);
+        $project = trim($matches[2]);
+
+        \Log::info('TextController@userAddTimeEntry: Extracted time and project: ', []);
+
+        try {
+            $user = TimeEntry::firstOrCreate([
+                'project' => $project,
+                'hours' => $hours,
+                'user_id' => $this->user->id,
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('TextController@userAddTimeEntry: Add User error: ', [$project, $hours, $this->user->name, $e->getMessage()]);
+            $message = $this->twiml->message();
+            $message->body($e->getMessage());
+            return response($this->twiml)->header('Content-Type', 'application/xml');
+        }
+
+        \Log::info('TextController@userAddTimeEntry: New time entry created successfully!', [$this->user->name]);
+        $message = $this->twiml->message();
+        $message->body(sprintf("Congrats!  The %s time entry has been added as %s hours.", $project, $hours));
+        return response($this->twiml)->header('Content-Type', 'application/xml');
+    }
+
+    /**
+     * Provide a list of TextMyTimesheet Admin commands
+     *
+     * @return mixed
+     */
+    private function userListCommands()
+    {
+        \Log::info('TextController@adminListCommands: SMS body contains the "command" keyword.  Returning a list of commands.', []);
+        $adminHelp = "Command list:\n\n" .
+            "add\n" .
+            "remove\n" .
+            "list\n" .
+            "search\n\n" .
+            "For help with any command, just text <command> help.\n\n" .
+            "For example: 'add help'";
+        $message = $this->twiml->message();
+        $message->body($adminHelp);
+        return response($this->twiml)->header('Content-Type', 'application/xml');
+    }
+
+    /**
+     * Where Admins can list app Users
+     *
+     * @return mixed
+     */
+    private function userListTimeEntries()
+    {
+        \Log::info('TextController@userListTimeEntries: SMS body contains the "list" keyword', []);
+
+        if (stristr($this->message, 'help')) {
+            \Log::info('TextController@userListTimeEntries: SMS body also contains the "help" keyword.  This is a request for help.', []);
+            $adminHelp = "The 'list' command provides you a list" .
+                " of your time entries for the past week.  Just type 'list' and we'll send them back!";
+            $message = $this->twiml->message();
+            $message->body($adminHelp);
+            return response($this->twiml)->header('Content-Type', 'application/xml');
+        }
+
+        \Log::info('TextController@userListTimeEntries: Getting a list of time entries for the past week.', []);
+
+        $timeEntries = $this->user->timeEntries;
+
+        if( ! $timeEntries) {
+            \Log::info('TextController@userListTimeEntries: No time entries found to list', [$timeEntries]);
+            $message = $this->twiml->message();
+            $message->body("Sorry, we didn't find any time entries to list.  " .
+                "If you think this is an error, you might want to check with the TMTS admin\n\n ¯\_(ツ)_/¯");
+            return response($this->twiml)->header('Content-Type', 'application/xml');
+        }
+
+        $listing = '';
+        foreach ($timeEntries as $time) {
+            $listing .= "$time->project ({$time->hours}hrs) on {$time->created_at->toFormattedDateString()}\n";
+        }
+
+        \Log::info('TextController@adminListUsers: Obtained a list of time entries', [$timeEntries]);
+        $message = $this->twiml->message();
+        $message->body(sprintf("Here's your list of time entries:\n\n%s", $listing));
         return response($this->twiml)->header('Content-Type', 'application/xml');
     }
 }
