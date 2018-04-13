@@ -11,7 +11,7 @@
         <li><a href="{{ url(config('backpack.base.route_prefix', 'admin') . '/permission') }}"><i class="fa fa-key"></i> <span>Permissions</span></a></li>
     </ul>
 </li>
-@elsecan('edit users')
+@elsecan('update users')
 <li class="treeview">
     <a href="#"><i class="fa fa-group"></i> <span>Users & Roles</span> <i class="fa fa-angle-left pull-right"></i></a>
     <ul class="treeview-menu">
