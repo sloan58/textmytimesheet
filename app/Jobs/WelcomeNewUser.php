@@ -47,19 +47,19 @@ class WelcomeNewUser implements ShouldQueue
                           "For a list of commands, just text 'commands' to this number\n\n";
 
         $client = new Client(env('TWILIO_SID'), env('TWILIO_TOKEN'));
-//        try {
-//            $message = $client->messages->create(
-//                $this->user->phone_number,
-//                [
-//                    'from' => env('TWILIO_DID'),
-//                    'body' => $welcomeMessage
-//                ]
-//            );
-//        } catch (TwilioException $e) {
-//            \Log::error('WelcomeNewUser@handle: error sending Welcome SMS', [$e->getMessage(), $this->user->phone_number]);
-//            exit;
-//        }
+        try {
+            $message = $client->messages->create(
+                $this->user->phone_number,
+                [
+                    'from' => env('TWILIO_DID'),
+                    'body' => $welcomeMessage
+                ]
+            );
+        } catch (TwilioException $e) {
+            \Log::error('WelcomeNewUser@handle: error sending Welcome SMS', [$e->getMessage(), $this->user->phone_number]);
+            exit;
+        }
 
-//        \Log::info('WelcomeNewUser@handle: Welcome Text sent successfully', [$message->sid]);
+        \Log::info('WelcomeNewUser@handle: Welcome Text sent successfully', [$message->sid]);
     }
 }
