@@ -39,7 +39,7 @@ class User extends Authenticatable
          */
         static::created(function(User $user) {
             \Log::info('User@boot: calling User Created hook', []);
-            WelcomeNewUser::dispatch($user);
+//            WelcomeNewUser::dispatch($user);
         });
 
         parent::boot();

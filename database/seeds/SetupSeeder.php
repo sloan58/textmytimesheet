@@ -35,14 +35,33 @@ class SetupSeeder extends Seeder
             'delete users'
         ]);
 
-        \App\User::create([
+        $user = \App\User::create([
             'name' => 'Marty Sloan',
             'email' => 'martinsloan58@gmail.com',
-            'phone_number' => env('ADMIN_TELEPHONE'),
-            'password' => bcrypt('p@$$word!')
-        ])->assignRole('developer', 'admin');
+            'phone_number' => env('MARTY_TELE'),
+            'password' => bcrypt('ilovebudlight')
+        ]);
+        $user->assignRole('admin');
+        $user->assignRole('developer');
 
-        $role = Role::create(['name' => 'user']);
+        $user = \App\User::create([
+            'name' => 'Jason Furtek',
+            'email' => 'jasonfurtek@yahoo.com',
+            'phone_number' => env('JASON_TELE'),
+            'password' => bcrypt('ilovebudlight')
+        ]);
+        $user->assignRole('admin');
+
+        $user = \App\User::create([
+            'name' => 'Kyle Heller',
+            'email' => 'kyle.helltek@gmail.com',
+            'phone_number' => env('KYLE_TELE'),
+            'password' => bcrypt('ilovebudlight')
+        ]);
+        $user->assignRole('admin');
+
+
+        Role::create(['name' => 'user']);
 
     }
 }

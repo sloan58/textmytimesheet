@@ -20,7 +20,7 @@ class TimeEntryCrudController extends CrudController
         */
         $this->crud->setModel('App\Models\TimeEntry');
         $this->crud->setRoute(config('backpack.base.route_prefix') . '/timeentry');
-        $this->crud->setEntityNameStrings('timeentry', 'time_entries');
+        $this->crud->setEntityNameStrings('timeentry', 'Time Entries');
 
         /*
         |--------------------------------------------------------------------------
@@ -28,16 +28,41 @@ class TimeEntryCrudController extends CrudController
         |--------------------------------------------------------------------------
         */
 
-        $this->crud->setFromDb();
+//        $this->crud->setFromDb();
 
         // ------ CRUD FIELDS
-        // $this->crud->addField($options, 'update/create/both');
+         $this->crud->addField([
+            'name' => 'hours',
+            'label' => 'Hours'
+         ]);
+        $this->crud->addField([
+            'name' => 'project',
+            'label' => 'Project'
+        ]);
+        $this->crud->addField([       // Select2Multiple = n-n relationship (with pivot table)
+            'label' => 'User',
+            'type' => 'select2',
+            'name' => 'user_id', // the method that defines the relationship in your Model
+            'entity' => 'user', // the method that defines the relationship in your Model
+            'attribute' => 'name', // foreign key attribute that is shown to user
+            'model' => 'App\User', // foreign key model
+        ]);
         // $this->crud->addFields($array_of_arrays, 'update/create/both');
         // $this->crud->removeField('name', 'update/create/both');
         // $this->crud->removeFields($array_of_names, 'update/create/both');
 
         // ------ CRUD COLUMNS
-        // $this->crud->addColumn(); // add a single column, at the end of the stack
+         $this->crud->addColumn('hours'); // add a single column, at the end of the stack
+         $this->crud->addColumn('project'); // add a single column, at the end of the stack
+         $this->crud->addColumn('user'); // add a single column, at the end of the stack
+         $this->crud->setColumnDetails('user', [
+             'label' => 'User',
+             'type' => 'select',
+             'name' => 'user_id', // the method that defines the relationship in your Model
+             'entity' => 'user', // the method that defines the relationship in your Model
+             'attribute' => 'name', // foreign key attribute that is shown to user
+             'model' => 'App\User', // foreign key model
+         ]); // add a single column, at the end of the stack
         // $this->crud->addColumns(); // add multiple columns, at the end of the stack
         // $this->crud->removeColumn('column_name'); // remove a column from the stack
         // $this->crud->removeColumns(['column_name_1', 'column_name_2']); // remove an array of columns from the stack
