@@ -20,7 +20,7 @@ class TimeEntryCrudController extends CrudController
         */
         $this->crud->setModel('App\Models\TimeEntry');
         $this->crud->setRoute(config('backpack.base.route_prefix') . '/timeentry');
-        $this->crud->setEntityNameStrings('timeentry', 'Time Entries');
+        $this->crud->setEntityNameStrings('Time Entry', 'Time Entries');
 
         /*
         |--------------------------------------------------------------------------
