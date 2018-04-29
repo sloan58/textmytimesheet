@@ -14,6 +14,7 @@
 Route::get('/tmts', 'TextController@entry');
 
 Route::group(['middleware' => ['admin']], function () {
+    Route::get('/dashboard', 'DashboardController@index');
     CRUD::resource('user', 'Admin\UserCrudController');
     CRUD::resource('timeentry', 'Admin\TimeEntryCrudController');
 });
