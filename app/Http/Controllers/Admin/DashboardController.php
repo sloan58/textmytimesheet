@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\TimeEntryReportJob;
+use App\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Request;
 
 class DashboardController extends Controller
 {
@@ -39,5 +42,21 @@ class DashboardController extends Controller
             ->options([]);
 
         return view('dashboard', compact('chartjs'));
+    }
+
+    public function report()
+    {
+        \Log::info("DashboardController@report: Received request for a report");
+
+        $startDate = Carbon::parse(request()->input('start_date'));
+        $endDate = Carbon::parse(request()->input('end_date'));
+        \Log::info("DashboardController@report: Set start and end dates for report", [$startDate, $endDate]);
+
+        \Log::info("DashboardController@report: Dispatching TimeEntryReportJob");
+        TimeEntryReportJob::dispatch($startDate, $endDate);
+
+        \Alert::success('Report Submitted!  Check your email.')->flash();
+
+        return redirect()->back();
     }
 }

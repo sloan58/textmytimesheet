@@ -17,4 +17,5 @@ Route::group(['middleware' => ['admin']], function () {
     Route::get('/dashboard', 'DashboardController@index');
     CRUD::resource('user', 'Admin\UserCrudController');
     CRUD::resource('timeentry', 'Admin\TimeEntryCrudController');
+    Route::post('report', 'DashboardController@report')->name('report');
 });
