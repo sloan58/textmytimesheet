@@ -10,12 +10,21 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Mail;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class TimeEntryReportJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    /**
+     * The number of times the job may be attempted.
+     *
+     * @var int
+     */
+    public $tries = 1;
+
     /**
      * @var
      */
@@ -108,6 +117,21 @@ class TimeEntryReportJob implements ShouldQueue
 
         \Log::info("TimeEntryReportJob@handle: Saving Spreadsheet");
         $writer = new Xlsx($spreadsheet);
-        $writer->save(storage_path('app/reports/') . Carbon::now()->toDateString() . '.xlsx');
+        $fileName = storage_path('app/reports/') . Carbon::now()->toDateString() . '.xlsx';
+        $writer->save($fileName);
+
+        \Log::info("TimeEntryReportJob@handle: Sending Mail");
+        Mail::raw("TextMyTimeSheet Report Attached",
+            function($message) use ($fileName){
+                $message->to('martin.sloan@karma-tek.com');
+                $message->bcc('martin.sloan@karma-tek.com');
+                $message->subject(
+                    sprintf("TextMyTimeSheet Report (%s to %s)",
+                        $this->startDate->toDateString(),
+                        $this->endDate->toDateString()
+                    )
+                );
+                $message->attach($fileName);
+            });
     }
 }
