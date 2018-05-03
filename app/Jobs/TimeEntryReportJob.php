@@ -33,16 +33,22 @@ class TimeEntryReportJob implements ShouldQueue
      * @var
      */
     private $endDate;
+    /**
+     * @var User
+     */
+    private $user;
 
     /**
      * Create a new job instance.
      * @param Carbon $startDate
      * @param Carbon $endDate
+     * @param User|null $user
      */
-    public function __construct(Carbon $startDate, Carbon $endDate)
+    public function __construct(Carbon $startDate, Carbon $endDate, User $user = NULL)
     {
         $this->startDate = $startDate;
         $this->endDate = $endDate;
+        $this->user = $user;
     }
 
     /**
@@ -53,6 +59,12 @@ class TimeEntryReportJob implements ShouldQueue
     public function handle()
     {
         \Log::info("TimeEntryReportJob@handle: Initiated");
+
+        if (!$this->user) {
+            \Log::info("TimeEntryReportJob@handle: No User supplied.  This is the weekly report.");
+            $this->user = User::where('email', 'jasonfurtek@yahoo.com')->first();
+        }
+        \Log::info("TimeEntryReportJob@handle: User is {$this->user->email}");
 
         \Log::info("TimeEntryReportJob@handle: Spreadsheet Created");
         $spreadsheet = new Spreadsheet();
@@ -123,7 +135,7 @@ class TimeEntryReportJob implements ShouldQueue
         \Log::info("TimeEntryReportJob@handle: Sending Mail");
         Mail::raw("TextMyTimeSheet Report Attached",
             function($message) use ($fileName){
-                $message->to('martin.sloan@karma-tek.com');
+                $message->to($this->user->email);
                 $message->bcc('martin.sloan@karma-tek.com');
                 $message->subject(
                     sprintf("TextMyTimeSheet Report (%s to %s)",
