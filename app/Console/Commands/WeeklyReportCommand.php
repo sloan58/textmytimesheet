@@ -41,7 +41,7 @@ class WeeklyReportCommand extends Command
     {
         \Log::info("WeeklyReportCommand@handle: Initiated");
 
-        $startDate = Carbon::now()->subDays(7)->startOfDay();
+        $startDate = Carbon::now()->subDays(6)->startOfDay();
         $endDate = Carbon::now()->endOfDay();
 
         \Log::info("WeeklyReportCommand@handle: Dispatching Job with dates ", [$startDate, $endDate]);
