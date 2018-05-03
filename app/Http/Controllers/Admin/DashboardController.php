@@ -53,7 +53,7 @@ class DashboardController extends Controller
         \Log::info("DashboardController@report: Set start and end dates for report", [$startDate, $endDate]);
 
         \Log::info("DashboardController@report: Dispatching TimeEntryReportJob");
-        TimeEntryReportJob::dispatch($startDate, $endDate, auth()->user);
+        TimeEntryReportJob::dispatch($startDate, $endDate, auth()->user());
 
         \Alert::success('Report Submitted!  Check your email.')->flash();
 
