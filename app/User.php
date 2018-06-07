@@ -2,8 +2,8 @@
 
 namespace App;
 
-use App\Jobs\WelcomeNewUser;
 use App\Models\TimeEntry;
+use App\Jobs\WelcomeNewUser;
 use Backpack\CRUD\CrudTrait;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
@@ -38,7 +38,9 @@ class User extends Authenticatable
          *  User created event
          */
         static::created(function(User $user) {
-            \Log::info('User@boot: calling User Created hook', []);
+            \Log::info('User@boot: calling User Created hook', [
+                $user->name, $user->email, $user->phone_number
+                ]);
             WelcomeNewUser::dispatch($user);
         });
 
