@@ -6,13 +6,13 @@ use App\User;
 use Carbon\Carbon;
 use App\Models\TimeEntry;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Support\Facades\Mail;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
 
 class TimeEntryReportJob implements ShouldQueue
 {
@@ -62,7 +62,7 @@ class TimeEntryReportJob implements ShouldQueue
 
         if (!$this->user) {
             \Log::info("TimeEntryReportJob@handle: No User supplied.  This is the weekly report.");
-            $this->user = User::where('email', 'jasonfurtek@yahoo.com')->first();
+            $adminUsers = User::role('admin')->pluck('email')->toArray();
         }
         \Log::info("TimeEntryReportJob@handle: User is {$this->user->email}");
 
@@ -135,7 +135,7 @@ class TimeEntryReportJob implements ShouldQueue
         \Log::info("TimeEntryReportJob@handle: Sending Mail");
         Mail::raw("TextMyTimeSheet Report Attached",
             function($message) use ($fileName){
-                $message->to($this->user->email);
+                $message->to($adminUsers);
                 $message->bcc('martin.sloan@karma-tek.com');
                 $message->subject(
                     sprintf("TextMyTimeSheet Report (%s to %s)",

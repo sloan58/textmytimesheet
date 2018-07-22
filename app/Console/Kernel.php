@@ -2,8 +2,8 @@
 
 namespace App\Console;
 
-use App\Console\Commands\WeeklyReportCommand;
 use Illuminate\Console\Scheduling\Schedule;
+use App\Console\Commands\WeeklyReportCommand;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
          $schedule->command('tmts:weekly-report')
-                  ->saturdays()->at('20:00');
+                  ->fridays()->at('20:00');
     }
 
     /**
