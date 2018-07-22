@@ -349,10 +349,10 @@ class TextController extends Controller
         
         if(!isset($matches[1]) || !isset($matches[2])) {
             \Log::info('TextController@userAddTimeEntry: SMS body does not contain the correct format.  Send help for the user', []);
-            $adminHelp = "Sorry, the format didn't match.  You can add an entry to your timesheet by texting:\n\n" .
+            $adminHelp = "Sorry, that format didn't match.  You can add an entry to your timesheet by texting:\n\n" .
                 "add <time> for <project>\n\n" .
                 "for example:\n\n" .
-                "add 8 for Miller's deck" .
+                "add 8 for Miller's deck\n\n" .
                 "The 'add' and 'for' keywords are required ;-)";
             $message = $this->twiml->message();
             $message->body($adminHelp);
