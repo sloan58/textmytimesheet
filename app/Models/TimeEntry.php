@@ -20,7 +20,8 @@ class TimeEntry extends Model
     protected $fillable = [
         'project',
         'user_id',
-        'hours'
+        'hours',
+        'created_at'
     ];
 
     /*
@@ -55,6 +56,9 @@ class TimeEntry extends Model
     | ACCESORS
     |--------------------------------------------------------------------------
     */
+    public function getCreatedAtAttribute($date) {
+        return \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $date)->format('m-d-Y');
+    }
 
     /*
     |--------------------------------------------------------------------------

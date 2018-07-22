@@ -120,7 +120,7 @@ class TimeEntryReportJob implements ShouldQueue
                 $timeEntry->user->name,
                 $timeEntry->hours,
                 $timeEntry->project,
-                $timeEntry->created_at->toDateString()
+                $timeEntry->created_at
             ], NULL, "A" . ($index + 2));
         }
 
