@@ -337,7 +337,8 @@ class TextController extends Controller
             $adminHelp = "You can add an entry to your timesheet by texting:\n\n" .
                 "add <time> for <project>\n\n" .
                 "For example:\n\n" .
-                "add 8 for Miller's deck";
+                "add 8 for Miller's deck\n\n" .
+                "The 'add' and 'for' keywords are required ;-)";
             $message = $this->twiml->message();
             $message->body($adminHelp);
             return response($this->twiml)->header('Content-Type', 'application/xml');
@@ -351,7 +352,8 @@ class TextController extends Controller
             $adminHelp = "Sorry, the format didn't match.  You can add an entry to your timesheet by texting:\n\n" .
                 "add <time> for <project>\n\n" .
                 "for example:\n\n" .
-                "add 8 for Miller's deck";
+                "add 8 for Miller's deck" .
+                "The 'add' and 'for' keywords are required ;-)";
             $message = $this->twiml->message();
             $message->body($adminHelp);
             return response($this->twiml)->header('Content-Type', 'application/xml');
