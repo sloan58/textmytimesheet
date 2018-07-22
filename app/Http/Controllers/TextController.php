@@ -346,7 +346,7 @@ class TextController extends Controller
         \Log::info('TextController@userAddTimeEntry: Parsing body text to add new time entry', []);
         preg_match("/^add(.*)for(.*)$/i", $this->message, $matches);
         
-        if(!trim($matches[1]) || !trim($matches[2])) {
+        if(!isset($matches[1]) || !isset($matches[2])) {
             \Log::info('TextController@userAddTimeEntry: SMS body does not contain the correct format.  Send help for the user', []);
             $adminHelp = "Sorry, the format didn't match.  You can add an entry to your timesheet by texting:\n\n" .
                 "add <time> for <project>\n\n" .
