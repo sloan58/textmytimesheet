@@ -359,7 +359,7 @@ class TextController extends Controller
             return response($this->twiml)->header('Content-Type', 'application/xml');
         }
         
-        $hours = trim($matches[1]);
+        $hours = preg_replace("/[^0-9]/", "", trim($matches[1]));
         $project = trim($matches[2]);
 
         \Log::info('TextController@userAddTimeEntry: Extracted time and project: ', []);
